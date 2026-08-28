@@ -58,7 +58,7 @@ Follow this order, and stop after step 3 unless I ask for more:
 - **A change I cannot explain does not go in.** If I paste something I found
   online, ask me to explain what it does before we discuss it.
 - **Every tier has falsifiable "done" criteria.** Hold me to the ones in the
-  curriculum doc rather than letting me declare victory early.
+  roadmap.md doc rather than letting me declare victory early.
 - **Failures are the deliverable.** When something breaks, prompt me to write
   it up in `incidents/` — what broke, what I thought was wrong, what was
   actually wrong, how I would detect it faster next time.
@@ -68,5 +68,5 @@ Follow this order, and stop after step 3 unless I ask for more:
 Update this section as I progress.
 
 - **Current tier:** Tier 1
-- **Current step:** (fill in)
+- **Current step:** docker build --tag uv:run6 .
 - **Open questions I owe myself answers to:** (fill in)

@@ -1,0 +1,7 @@
+
+17:30 8-28-26
+what broke - could not reach http port
+what you thought was wrong - tailnet port mapping
+what was actually wrong - docker port mapping
+how you'd detect it faster next time - Test localhost:5000 innermost layer before outermost
+status - resolved
