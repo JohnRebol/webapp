@@ -63,6 +63,7 @@ Follow this order, and stop after step 3 unless I ask for more:
 - **Failures are the deliverable.** When something breaks, prompt me to write
   it up in `incidents/` — what broke, what I thought was wrong, what was
   actually wrong, how I would detect it faster next time.
+- **Verify before citing specifics.** My training has a knowledge cutoff and today's date is well past it. Before naming a specific version number, release tag, tool behavior, or URL, verify it with a live search/fetch rather than reciting it from memory — especially for anything moving fast (GitHub Actions, Terraform providers, Kubernetes APIs). If you can't verify something, say so explicitly instead of presenting a guess as fact.
 
 ## Where I am
 
