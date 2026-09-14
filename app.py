@@ -5,7 +5,7 @@ app = Flask(__name__)
 # --- Site content -----------------------------------------------------
 # Edit this dict to change contact info without touching the template.
 COMPANY = {
-    "name": "Bedrock & Peam Construction",
+    "name": "Bedrock & Beam Construction",
     "tagline": "Built on the ground up.",
     "phone": "(555) 812-4477",
     "email": "info@bedrockbeam.com",
