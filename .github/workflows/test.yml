@@ -2,9 +2,9 @@ name: test
 
 on:
   push:
-    branches: [dev]
+    branches: [main]
 jobs:
-  uv-example:
+  pytest:
     name: python
     runs-on: ubuntu-24.04
 
