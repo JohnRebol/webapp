@@ -70,5 +70,5 @@ Follow this order, and stop after step 3 unless I ask for more:
 Update this section as I progress.
 
 - **Current tier:** Tier 1
-- **Current step:** docker build --tag uv:run6 .
+- **Current step:** Next up per the roadmap (outline step 4): a build job.
 - **Open questions I owe myself answers to:** (fill in)
