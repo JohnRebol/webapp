@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     if: github.event_name == 'pull_request'
     steps:
-      -run: echo "tested"
+      - run: echo "tested"
 
   build:
     name: webapp
