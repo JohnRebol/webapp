@@ -44,9 +44,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase repo name
+        id: image-name
+        run: echo "name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - name: push image
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           push: true
           context: .
-          tags: ghcr.io/${{ github.repository }}:${{ github.sha }},ghcr.io/${{ github.repository }}:v0.1.${{ github.run_number }}
+          tags: ghcr.io/${{ steps.image-name.outputs.name }}:${{ github.sha }},ghcr.io/${{ steps.image-name.outputs.name }}:v0.1.${{ github.run_number }}
