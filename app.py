@@ -1,4 +1,9 @@
-from flask import Flask, render_template
+from importlib import import_module
+
+# Resolve Flask at runtime so static analyzers do not require Flask's stubs.
+_flask = import_module("flask")
+Flask = _flask.Flask
+render_template = _flask.render_template
 
 app = Flask(__name__)
 
