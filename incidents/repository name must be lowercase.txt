@@ -3,4 +3,4 @@ what broke - gh actions failed error: "repository name must be lowercase"
 what you thought was wrong - my repository name should be chagned to lower case
 what was actually wrong -  registries follow the OCI distribution spec, which requires repository names to be lowercase; GitHub allows mixed-case repo names; the workflow was feeding the repo name straight into the image tag without normalizing case.
 how you'd detect it faster next time - never trust a dynamic value to already be in the shape a downstream system requires; normalize it in the pipeline instead.
-status - pending test
+status - closed

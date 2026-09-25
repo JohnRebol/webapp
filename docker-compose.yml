@@ -1,7 +1,6 @@
 services:
   web:
-    build: .
-    image: uv:run6
+    image: ${IMAGE} # set by ci.yml deploy job
     restart: unless-stopped
     ports:
       - "127.0.0.1:5000:5000"

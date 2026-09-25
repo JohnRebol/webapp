@@ -70,5 +70,40 @@ Follow this order, and stop after step 3 unless I ask for more:
 Update this section as I progress.
 
 - **Current tier:** Tier 1
-- **Current step:** Next up per the roadmap (outline step 4): a build job.
+- **Current step:** step 5 bullet 2
+
+  — Step 5: Deploy Job Next Steps
+
+1. **Secrets setup** — generate an SSH keypair, add the public key to
+   `app-host`'s `authorized_keys`, store the private key as a GitHub Actions
+   secret (e.g. `DEPLOY_SSH_KEY`). Also generate a Tailscale auth key (prefer
+   ephemeral + reusable=false or short expiry) and store it as another secret.
+
+2. **Add the `deploy` job** to your existing workflow file, `needs: build`.
+   Steps inside it:
+   - `tailscale/github-action` to join the tailnet (pass the auth key secret
+     as input).
+   - An SSH step (e.g. `appleboy/ssh-action` or raw `ssh` with
+     `webfactory/ssh-agent` to load the key) targeting `app-host`'s tailnet
+     hostname/IP, running `docker compose pull && docker compose up -d`. The
+     image tag it pulls needs to come from `needs.build.outputs.<tag>` — you
+     already decided how the tag passes since it's one workflow now.
+
+3. **Smoke test step** — after deploy, `curl -f
+   http://<app-host-tailnet-addr>:<port>/health` from the runner (still on
+   the tailnet at that point).
+
+4. **Branch protection** — this is a GitHub repo setting, not code:
+   Settings → Branches → protect `main`, require `test` and `build` status
+   checks before merge.
+
+5. **Rollback input** — add `workflow_dispatch` with an `image_tag` input to
+   the workflow, and gate the deploy job's pulled tag on whether it was
+   manually triggered vs. a normal push.
+
+6. **Verify done criteria** — push, confirm test→build→deploy completes
+   under 5 min; break a test on purpose and confirm deploy never runs; check
+   the Actions log for the SSH key/auth key showing as `***`; check the XB8
+   admin UI shows no new inbound port forward.
+
 - **Open questions I owe myself answers to:** (fill in)
