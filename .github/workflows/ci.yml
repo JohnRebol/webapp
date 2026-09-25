@@ -1,4 +1,4 @@
-name: test
+name: ci
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 jobs:
   pytest:
-    name: python
+    name: test
     runs-on: ubuntu-24.04
 
     steps:
@@ -32,8 +32,11 @@ jobs:
         run: uv run pytest tests
 
   build:
-    name: webapp
+    name: build
     runs-on: ubuntu-24.04
+
+    outputs:
+      image: ghcr.io/${{ steps.image-name.outputs.name }}:${{ github.sha }}
     needs: pytest
     permissions:
       contents: read
@@ -59,3 +62,52 @@ jobs:
           push: true
           context: .
           tags: ghcr.io/${{ steps.image-name.outputs.name }}:${{ github.sha }},ghcr.io/${{ steps.image-name.outputs.name }}:v0.1.${{ github.run_number }}
+
+  deploy:
+    name: deploy
+    runs-on: ubuntu-24.04
+    needs: build
+    if: github.ref == 'refs/heads/main' && needs.build.result == 'success'
+    permissions:
+      contents: read
+    env:
+      APP_HOST: app-host # or app-host.<tailnet>.ts.net / 100.x.y.z if MagicDNS doesn't resolve
+      DEPLOY_USER: jreboll # the user whose authorized_keys has the deploy pubkey
+      REMOTE_DIR: /home/jreboll/webapp
+
+    steps:
+      - *checkout
+      - name: Join tailnet as tag:gha-runner
+        uses: tailscale/github-action@d1b6cd204f8dceda5b3eaad7f1f767be390056cd #v4.2.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:gha-runner
+
+      - name: Port 22 reachable
+        run: nc -zv -w 5 "$APP_HOST" 22
+
+      - name: Deploy via SSH
+        env:
+          KEY: ${{ secrets.TAILSCALE_DEPLOY_SSH_KEY }}
+          IMAGE: ${{ needs.build.outputs.image }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          SSH_OPTS="-i $HOME/.ssh/id_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10"
+          ssh $SSH_OPTS "$DEPLOY_USER@$APP_HOST" "mkdir -p '$REMOTE_DIR'"
+          scp $SSH_OPTS docker-compose.yml \
+              "$DEPLOY_USER@$APP_HOST:$REMOTE_DIR/docker-compose.yml"
+          ssh $SSH_OPTS "$DEPLOY_USER@$APP_HOST" \
+              "IMAGE='$IMAGE' bash -s" << EOF
+          set -euo pipefail
+          cd '$REMOTE_DIR'
+          docker compose pull
+          docker compose up -d --remove-orphans
+          docker image prune -f
+          EOF
+
+      - name: Clean up key
+        if: always()
+        run: rm -f ~/.ssh/id_deploy
