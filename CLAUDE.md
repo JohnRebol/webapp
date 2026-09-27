@@ -70,7 +70,7 @@ Follow this order, and stop after step 3 unless I ask for more:
 Update this section as I progress.
 
 - **Current tier:** Tier 1
-- **Current step:** step 5 bullet 2
+- **Current step:** 5. Rollback input (workflow_dispatch)
 
   — Step 5: Deploy Job Next Steps
 
@@ -106,4 +106,5 @@ Update this section as I progress.
    the Actions log for the SSH key/auth key showing as `***`; check the XB8
    admin UI shows no new inbound port forward.
 
-- **Open questions I owe myself answers to:** (fill in)
+- **Open questions I owe myself answers to:**
+Whether --wait + a healthcheck: block is worth adding

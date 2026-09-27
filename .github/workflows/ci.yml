@@ -5,10 +5,19 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Existing tag to roll back to (e.g. v0.1.42 or a commit SHA). Leave empty for normal build + deploy."
+        required: false
+        default: ""
+        type: string
+
 jobs:
   pytest:
     name: test
     runs-on: ubuntu-24.04
+    if: ${{ !inputs.image_tag }}
 
     steps:
       - &checkout
@@ -66,7 +75,9 @@ jobs:
     name: deploy
     runs-on: ubuntu-24.04
     needs: build
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      !cancelled() && github.ref == 'refs/heads/main' &&
+      (needs.build.result == 'success' || inputs.image_tag)
     permissions:
       contents: read
     env:
@@ -89,8 +100,16 @@ jobs:
       - name: Deploy via SSH
         env:
           KEY: ${{ secrets.TAILSCALE_DEPLOY_SSH_KEY }}
-          IMAGE: ${{ needs.build.outputs.image }}
+          BUILT_IMAGE: ${{ needs.build.outputs.image }}
+          ROLLBACK_TAG: ${{ inputs.image_tag }}
         run: |
+          if [ -n "$ROLLBACK_TAG" ]; then
+            IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}:$ROLLBACK_TAG"
+          else
+            IMAGE="$BUILT_IMAGE"
+          fi
+          echo "Deploying $IMAGE"
+
           mkdir -p ~/.ssh
           echo "$KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
           SSH="ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=no $DEPLOY_USER@$APP_HOST"
