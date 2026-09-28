@@ -126,7 +126,7 @@ jobs:
 
           "${SSH[@]}" "
             cd $REMOTE_DIR && printf 'IMAGE=%s\n' '$IMAGE' > .env.tmp &&
-            mv .env.tmp .env && docker compose up -d --pull always
+            mv .env.tmp .env && docker compose up -d --pull always --remove-orphans
           "
 
       - name: Run smoke-test
