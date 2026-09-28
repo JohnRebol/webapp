@@ -15,9 +15,11 @@ COPY . /app
 
 RUN uv sync --locked
 
-
-
-
+# Build version from CI (build-args in ci.yml); "dev" for local builds.
+ARG APP_VERSION=dev
+ARG GIT_SHA=unknown
+ENV APP_VERSION=$APP_VERSION \
+    GIT_SHA=$GIT_SHA
 
 
 # Presuming there is a `my_app` command provided by the project
