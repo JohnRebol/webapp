@@ -6,13 +6,15 @@ COPY --from=ghcr.io/astral-sh/uv:0.12.5@sha256:e85be844203885286c60ffad8a858d48a
 # Disable development dependencies
 ENV UV_NO_DEV=1
 
+# Non-root user; /app is created up front so the user can write .venv into it
+RUN useradd --create-home --uid 1000 app \
+    && mkdir /app && chown app:app /app
 
 WORKDIR /app
-COPY . /app
-
+COPY --chown=app:app . /app
+USER app
 
 # Sync the project into a new environment, asserting the lockfile is up to date
-
 RUN uv sync --locked
 
 # Build version from CI (build-args in ci.yml); "dev" for local builds.
@@ -21,6 +23,5 @@ ARG GIT_SHA=unknown
 ENV APP_VERSION=$APP_VERSION \
     GIT_SHA=$GIT_SHA
 
-
-# Presuming there is a `my_app` command provided by the project
-CMD ["uv", "run", "app.py"]
+# Environment was built at image build time; --no-sync keeps the container from rewriting it
+CMD ["uv", "run", "--no-sync", "app.py"]

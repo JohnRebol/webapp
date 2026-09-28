@@ -1,6 +1,7 @@
+name: webapp
 services:
   web:
-    image: ${IMAGE} # set by ci.yml deploy job
+    image: ${IMAGE:?IMAGE is not set - deploy via CI or check .env} # set by ci.yml deploy job
     restart: unless-stopped
     ports:
       - "5000:5000"
