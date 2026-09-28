@@ -1,3 +1,4 @@
+name: webapp
 services:
   web:
     image: ${IMAGE:?IMAGE is not set - deploy via CI or check .env} # set by ci.yml deploy job
