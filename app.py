@@ -1,4 +1,8 @@
+import os
 from importlib import import_module
+
+APP_VERSION = os.environ.get("APP_VERSION", "dev")
+GIT_SHA = os.environ.get("GIT_SHA", "unknown")
 
 # Resolve Flask at runtime so static analyzers do not require Flask's stubs.
 _flask = import_module("flask")
@@ -34,7 +38,7 @@ def index():
 
 @app.route("/health")
 def health():
-    return {"status": "ok"}, 200
+    return {"status": "ok", "version": APP_VERSION, "sha": GIT_SHA[:7]}
 
 
 if __name__ == "__main__":
