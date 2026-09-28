@@ -118,7 +118,9 @@ jobs:
           SSH="ssh -i ~/.ssh/id_deploy -o StrictHostKeyChecking=no $DEPLOY_USER@$APP_HOST"
 
           $SSH "mkdir -p $REMOTE_DIR && cat > $REMOTE_DIR/docker-compose.yml" < docker-compose.yml
-          $SSH "cd $REMOTE_DIR && IMAGE=$IMAGE docker compose up -d --pull always"
+          $SSH "cd $REMOTE_DIR \
+            && printf 'IMAGE=%s\n' '$IMAGE' > .env.tmp && mv .env.tmp .env \
+            && docker compose up -d --pull always"
 
       - name: Run smoke-test
         run: |
