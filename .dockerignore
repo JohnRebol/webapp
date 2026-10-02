@@ -21,3 +21,11 @@ zbacklog.txt
 ztier2-build-notes.md
 .git/
 .env
+
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
