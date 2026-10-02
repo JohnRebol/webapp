@@ -1,0 +1,9 @@
+
+17:30 9-27-26
+
+What control are you verifying — a failing test in the test job prevents build and deploy from ever running.
+What change you made, and why you expected it to fail — did not update test_app to match new  /health endpoint's JSON response and caused an error for testing failed ci
+What actually happened — did it fail the way you predicted? yes pytest assertion no longer match. build and deploy show as skipped.
+Any surprise — no
+How you'd detect this class of problem faster in general — run uv run pytest tests
+Status- Resolved

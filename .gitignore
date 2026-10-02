@@ -11,6 +11,16 @@ wheels/
 .venv
 
 
-# Private planning notes
-roadmap.md
-znotes.txt
+# Private planning notes and secrets
+zroadmap.md
+ztier2-build-notes.md
+zbacklog.txt
+.env
+
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*

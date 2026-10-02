@@ -59,7 +59,7 @@ Follow this order, and stop after step 3 unless I ask for more:
 - **A change I cannot explain does not go in.** If I paste something I found
   online, ask me to explain what it does before we discuss it.
 - **Every tier has falsifiable "done" criteria.** Hold me to the ones in the
-  roadmap.md doc rather than letting me declare victory early.
+  zroadmap.md doc rather than letting me declare victory early.
 - **Failures are the deliverable.** When something breaks, prompt me to write
   it up in `incidents/` — what broke, what I thought was wrong, what was
   actually wrong, how I would detect it faster next time.
@@ -69,42 +69,5 @@ Follow this order, and stop after step 3 unless I ask for more:
 
 Update this section as I progress.
 
-- **Current tier:** Tier 1
-- **Current step:** 5. Rollback input (workflow_dispatch)
-
-  — Step 5: Deploy Job Next Steps
-
-1. **Secrets setup** — generate an SSH keypair, add the public key to
-   `app-host`'s `authorized_keys`, store the private key as a GitHub Actions
-   secret (e.g. `DEPLOY_SSH_KEY`). Also generate a Tailscale auth key (prefer
-   ephemeral + reusable=false or short expiry) and store it as another secret.
-
-2. **Add the `deploy` job** to your existing workflow file, `needs: build`.
-   Steps inside it:
-   - `tailscale/github-action` to join the tailnet (pass the auth key secret
-     as input).
-   - An SSH step (e.g. `appleboy/ssh-action` or raw `ssh` with
-     `webfactory/ssh-agent` to load the key) targeting `app-host`'s tailnet
-     hostname/IP, running `docker compose pull && docker compose up -d`. The
-     image tag it pulls needs to come from `needs.build.outputs.<tag>` — you
-     already decided how the tag passes since it's one workflow now.
-
-3. **Smoke test step** — after deploy, `curl -f
-   http://<app-host-tailnet-addr>:<port>/health` from the runner (still on
-   the tailnet at that point).
-
-4. **Branch protection** — this is a GitHub repo setting, not code:
-   Settings → Branches → protect `main`, require `test` and `build` status
-   checks before merge.
-
-5. **Rollback input** — add `workflow_dispatch` with an `image_tag` input to
-   the workflow, and gate the deploy job's pulled tag on whether it was
-   manually triggered vs. a normal push.
-
-6. **Verify done criteria** — push, confirm test→build→deploy completes
-   under 5 min; break a test on purpose and confirm deploy never runs; check
-   the Actions log for the SSH key/auth key showing as `***`; check the XB8
-   admin UI shows no new inbound port forward.
-
-- **Open questions I owe myself answers to:**
-Whether --wait + a healthcheck: block is worth adding
+- **Current tier:** Tier 2
+- **Current step:**  Step 2: Terraform VM Provisioning Next Steps

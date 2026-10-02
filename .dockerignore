@@ -3,6 +3,7 @@
 __pycache__/
 *.py[oc]
 build/
+incidents/
 dist/
 wheels/
 *.egg-info
@@ -12,8 +13,19 @@ wheels/
 .venv
 
 
-# Private planning notes
-roadmap.md
+
+# Private planning notes and secrets
+zroadmap.md
 CLAUDE.md
-znotes.txt
+zbacklog.txt
+ztier2-build-notes.md
 .git/
+.env
+
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+**/*.tfstate
+**/*.tfstate.*
