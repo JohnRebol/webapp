@@ -70,4 +70,4 @@ Follow this order, and stop after step 3 unless I ask for more:
 Update this section as I progress.
 
 - **Current tier:** Tier 2
-- **Current step:**  Step 2
+- **Current step:**  Step 2: Terraform VM Provisioning Next Steps
