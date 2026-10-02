@@ -11,7 +11,8 @@ wheels/
 .venv
 
 
-# Private planning notes
+# Private planning notes and secrets
 zroadmap.md
 ztier2-build-notes.md
 zbacklog.txt
+.env
