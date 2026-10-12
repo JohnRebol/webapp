@@ -60,3 +60,15 @@ resource "proxmox_virtual_environment_vm" "k8s_nodes" {
 output "k8s_vm_ids" {
   value = { for name, vm in proxmox_virtual_environment_vm.k8s_nodes : name => vm.vm_id }
 }
+
+resource "terraform_data" "known_hosts_cleanup" {
+  for_each         = local.k8s_nodes
+  input            = split("/", each.value.ip)[0]
+  triggers_replace = [proxmox_virtual_environment_vm.k8s_nodes[each.key].id]
+
+  provisioner "local-exec" {
+    when       = destroy
+    command    = "ssh-keygen -f ~/.ssh/known_hosts -R ${self.input}"
+    on_failure = continue
+  }
+}
