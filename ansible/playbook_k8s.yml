@@ -1,0 +1,42 @@
+- name: Deploy users
+  hosts: all
+  become: true
+  tasks:
+    - name: Add the user 'deploy'
+      ansible.builtin.user:
+        name: deploy
+        comment: Ansible deploy user
+        shell: /bin/bash
+
+    - name: Allow deploy user to use sudo without a password
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/deploy
+        content: "deploy ALL=(ALL) NOPASSWD:ALL\n"
+        owner: root
+        group: root
+        mode: "0440"
+        validate: "visudo -cf %s"
+
+    - name: Add deploy user's SSH key
+      ansible.posix.authorized_key:
+        user: deploy
+        key: "{{ lookup('file', '~/.ssh/forge.pub') }}"
+        state: present
+
+    - name: Disable root login and password authentication
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/00-hardening.conf
+        content: |
+          PermitRootLogin no
+          PasswordAuthentication no
+        owner: root
+        group: root
+        mode: "0644"
+        validate: "sshd -t -f %s"
+      notify: Restart SSH
+
+  handlers:
+    - name: Restart SSH
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
