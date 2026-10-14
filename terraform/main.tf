@@ -50,7 +50,6 @@ resource "proxmox_virtual_environment_vm" "k8s_nodes" {
     }
     user_account {
       username = "ubuntu"
-      password = var.vm_password
       keys     = [var.vm_sshkey]
     }
   }

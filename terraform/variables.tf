@@ -14,11 +14,6 @@ variable "proxmox_api_token_id" {
   description = "Proxmox API token ID, supplied via TF_VAR_proxmox_api_token_id."
 }
 
-variable "vm_password" {
-  type        = string
-  description = "vm_password."
-}
-
 
 variable "vm_sshkey" {
   type        = string
