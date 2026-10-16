@@ -1,0 +1,12 @@
+k8s_minor: "1.36" # selects the apt repo (pkgs.k8s.io/.../v1.36)
+k8s_version: "1.36.5" # exact kubeadm/kubelet/kubectl version; must match the golden image (Packer)
+k8s_pkg_revision: "1.1" # Debian package revision suffix (1.36.5-1.1)
+
+calico_version: "v3.33.0"
+calico_manifests: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests"
+
+# Must match the CIDR in Calico's custom-resources.yaml (its default is 192.168.0.0/16)
+pod_subnet: "192.168.0.0/16"
+service_subnet: "10.96.0.0/12"
+
+kubeconfig: /etc/kubernetes/admin.conf
