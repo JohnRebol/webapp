@@ -16,11 +16,12 @@ resource "proxmox_virtual_environment_vm" "k8s_nodes" {
   name      = each.key
 
   clone {
-    vm_id = 9000 # replace with the numeric ID of your template VM in Proxmox
+    vm_id = 9003
   }
 
   cpu {
     cores = each.value.cores
+    type  = "host"
   }
 
   memory {
@@ -49,7 +50,7 @@ resource "proxmox_virtual_environment_vm" "k8s_nodes" {
       }
     }
     user_account {
-      username = "ubuntu"
+      username = "deploy"
       keys     = [var.vm_sshkey]
     }
   }
