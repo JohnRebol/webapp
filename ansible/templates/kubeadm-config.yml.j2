@@ -1,0 +1,46 @@
+# kubeadm configuration, rendered per control-plane host.
+# Templated values come from group_vars/all.yml and the inventory.
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: {{ ansible_host }}     # 10.10.1.150 from host.yml
+  bindPort: 6443
+nodeRegistration:
+  criSocket: unix:///var/run/containerd/containerd.sock
+  imagePullPolicy: IfNotPresent
+  imagePullSerial: true
+  name: {{ inventory_hostname }}           # k8s-cp-1
+  # null = no control-plane taint, so regular pods can also run here.
+  # Handy in a small lab; remove this line to keep the CP dedicated.
+  taints: null
+timeouts:
+  controlPlaneComponentHealthCheck: 4m0s
+  discovery: 5m0s
+  etcdAPICall: 2m0s
+  kubeletHealthCheck: 4m0s
+  kubernetesAPICall: 1m0s
+  tlsBootstrap: 5m0s
+  upgradeManifests: 5m0s
+---
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: ClusterConfiguration
+# No feature gates needed: MutatingAdmissionPolicy is GA (v1) in 1.36.
+apiServer: {}
+caCertificateValidityPeriod: 87600h0m0s
+certificateValidityPeriod: 8760h0m0s
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controllerManager: {}
+dns: {}
+encryptionAlgorithm: RSA-2048
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+imageRepository: registry.k8s.io
+kubernetesVersion: {{ k8s_version }}
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: {{ service_subnet }}
+  podSubnet: {{ pod_subnet }}
+proxy: {}
+scheduler: {}

@@ -20,7 +20,7 @@ zbacklog.txt
 ### Terraform ###
 # Local .terraform directories
 **/.terraform/*
-
+*.tfvars
 # .tfstate files
 *.tfstate
 *.tfstate.*
